@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountBalance
 import androidx.compose.material.icons.rounded.AccountBalanceWallet
@@ -45,13 +44,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finance.di.AppViewModelProvider
 import com.example.finance.domain.model.Fund
 import com.example.finance.domain.model.FundType
+import com.example.finance.ui.components.MoneyTextField
 import com.example.finance.util.toMoney
 
 @Composable
@@ -232,13 +231,10 @@ private fun AddFundDialog(
                     singleLine = true
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
+                MoneyTextField(
                     value = balance,
-                    onValueChange = { value -> balance = value.filter(Char::isDigit).take(12) },
-                    label = { Text("Saldo inicial") },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    prefix = { Text("$") }
+                    onValueChange = { balance = it },
+                    label = "Saldo inicial"
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

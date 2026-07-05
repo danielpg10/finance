@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
@@ -33,7 +32,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -42,6 +40,7 @@ import com.example.finance.di.AppViewModelProvider
 import com.example.finance.domain.model.Transaction
 import com.example.finance.ui.components.EmptyState
 import com.example.finance.ui.components.GoalProgressRing
+import com.example.finance.ui.components.MoneyTextField
 import com.example.finance.ui.components.TransactionRow
 import com.example.finance.ui.theme.ExpenseRed
 import com.example.finance.ui.theme.IncomeGreen
@@ -291,13 +290,10 @@ private fun EditGoalDialog(
                     singleLine = true
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
+                MoneyTextField(
                     value = target,
-                    onValueChange = { value -> target = value.filter(Char::isDigit).take(12) },
-                    label = { Text("Monto objetivo") },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    prefix = { Text("$") }
+                    onValueChange = { target = it },
+                    label = "Monto objetivo"
                 )
             }
         },
