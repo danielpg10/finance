@@ -94,7 +94,6 @@ fun AddTransactionScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 20.dp)
-                .verticalScroll(rememberScrollState())
         ) {
             TypeSelector(
                 selected = uiState.type,
@@ -106,59 +105,65 @@ fun AddTransactionScreen(
                 type = uiState.type
             )
 
-            when (uiState.type) {
-                TransactionType.EXPENSE -> {
-                    SectionTitle("Categoría")
-                    CategoryGrid(
-                        categories = categories.map { Triple(it.id, it.name, it) },
-                        selectedId = uiState.selectedCategoryId,
-                        onSelect = viewModel::onCategorySelected,
-                        onCreateNew = { showCreateCategory = true }
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    FromSavingsRow(
-                        checked = uiState.fromSavings,
-                        onCheckedChange = viewModel::onFromSavingsChange
-                    )
-                    AnimatedVisibility(visible = uiState.fromSavings) {
-                        Column {
-                            Spacer(modifier = Modifier.height(10.dp))
-                            FundChips(
-                                funds = funds.map { it.id to it.name },
-                                selectedId = uiState.selectedFundId,
-                                onSelect = viewModel::onFundSelected
-                            )
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                when (uiState.type) {
+                    TransactionType.EXPENSE -> {
+                        SectionTitle("Categoría")
+                        CategoryGrid(
+                            categories = categories.map { Triple(it.id, it.name, it) },
+                            selectedId = uiState.selectedCategoryId,
+                            onSelect = viewModel::onCategorySelected,
+                            onCreateNew = { showCreateCategory = true }
+                        )
+                        Spacer(modifier = Modifier.height(14.dp))
+                        FromSavingsRow(
+                            checked = uiState.fromSavings,
+                            onCheckedChange = viewModel::onFromSavingsChange
+                        )
+                        AnimatedVisibility(visible = uiState.fromSavings) {
+                            Column {
+                                Spacer(modifier = Modifier.height(10.dp))
+                                FundChips(
+                                    funds = funds.map { it.id to it.name },
+                                    selectedId = uiState.selectedFundId,
+                                    onSelect = viewModel::onFundSelected
+                                )
+                            }
                         }
                     }
+                    TransactionType.SAVING -> {
+                        SectionTitle("¿A qué fondo va tu aporte?")
+                        FundChips(
+                            funds = funds.map { it.id to it.name },
+                            selectedId = uiState.selectedFundId,
+                            onSelect = viewModel::onFundSelected
+                        )
+                    }
+                    TransactionType.INCOME -> Unit
                 }
-                TransactionType.SAVING -> {
-                    SectionTitle("¿A qué fondo va tu aporte?")
-                    FundChips(
-                        funds = funds.map { it.id to it.name },
-                        selectedId = uiState.selectedFundId,
-                        onSelect = viewModel::onFundSelected
-                    )
-                }
-                TransactionType.INCOME -> Unit
+
+                Spacer(modifier = Modifier.height(14.dp))
+                OutlinedTextField(
+                    value = uiState.note,
+                    onValueChange = viewModel::onNoteChange,
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("Nota (opcional)") },
+                    singleLine = true,
+                    shape = RoundedCornerShape(16.dp)
+                )
+                Spacer(modifier = Modifier.height(12.dp))
             }
 
-            Spacer(modifier = Modifier.height(18.dp))
-            OutlinedTextField(
-                value = uiState.note,
-                onValueChange = viewModel::onNoteChange,
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Nota (opcional)") },
-                singleLine = true,
-                shape = RoundedCornerShape(16.dp)
-            )
-
-            Spacer(modifier = Modifier.height(14.dp))
             NumericKeypad(
                 onDigit = viewModel::onDigit,
                 onDelete = viewModel::onDeleteDigit
             )
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             Button(
                 onClick = viewModel::save,
                 enabled = uiState.canSave,
@@ -169,7 +174,7 @@ fun AddTransactionScreen(
             ) {
                 Text("Guardar", fontWeight = FontWeight.Bold)
             }
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 
@@ -233,7 +238,7 @@ private fun AmountDisplay(
         maxLines = 1,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 22.dp)
+            .padding(vertical = 14.dp)
     )
 }
 
@@ -399,7 +404,7 @@ private fun KeypadButton(
 ) {
     TextButton(
         onClick = onClick,
-        modifier = modifier.aspectRatio(2.1f),
+        modifier = modifier.aspectRatio(2.6f),
         shape = RoundedCornerShape(16.dp)
     ) {
         if (key == "⌫") {
