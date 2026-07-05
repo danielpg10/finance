@@ -15,7 +15,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Backspace
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,6 +36,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,6 +61,7 @@ fun AddTransactionScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val categories by viewModel.categories.collectAsStateWithLifecycle()
     val funds by viewModel.funds.collectAsStateWithLifecycle()
+    var showCreateCategory by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(uiState.saved) {
         if (uiState.saved) onClose()
@@ -126,7 +132,8 @@ fun AddTransactionScreen(
                                     modifier = Modifier.height(18.dp)
                                 )
                             }
-                        }
+                        },
+                        onCreateNew = { showCreateCategory = true }
                     )
                 }
                 TransactionType.SAVING -> {
@@ -172,6 +179,16 @@ fun AddTransactionScreen(
             Spacer(modifier = Modifier.height(24.dp))
         }
     }
+
+    if (showCreateCategory) {
+        CreateCategorySheet(
+            onDismiss = { showCreateCategory = false },
+            onSave = { name, icon, color ->
+                viewModel.createCategory(name, icon, color)
+                showCreateCategory = false
+            }
+        )
+    }
 }
 
 @Composable
@@ -179,7 +196,8 @@ private fun SelectorRow(
     items: List<Pair<Long, String>>,
     selectedId: Long?,
     onSelect: (Long) -> Unit,
-    leadingIcon: (@Composable (Long) -> Unit)?
+    leadingIcon: (@Composable (Long) -> Unit)?,
+    onCreateNew: (() -> Unit)? = null
 ) {
     Row(
         modifier = Modifier
@@ -197,6 +215,20 @@ private fun SelectorRow(
                 colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
                 )
+            )
+        }
+        if (onCreateNew != null) {
+            AssistChip(
+                onClick = onCreateNew,
+                label = { Text("Nueva") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Rounded.Add,
+                        contentDescription = null,
+                        modifier = Modifier.height(18.dp)
+                    )
+                },
+                shape = RoundedCornerShape(12.dp)
             )
         }
     }

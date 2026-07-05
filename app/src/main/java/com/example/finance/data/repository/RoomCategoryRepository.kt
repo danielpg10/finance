@@ -14,11 +14,10 @@ class RoomCategoryRepository(private val categoryDao: CategoryDao) : CategoryRep
             entities.map { it.toDomain() }
         }
 
-    override suspend fun addCategory(name: String, icon: String, color: Long, monthlyBudget: Long?) {
+    override suspend fun addCategory(name: String, icon: String, color: Long, monthlyBudget: Long?): Long =
         categoryDao.insert(
             CategoryEntity(name = name, icon = icon, color = color, monthlyBudget = monthlyBudget)
         )
-    }
 
     override suspend fun updateCategory(category: Category) {
         categoryDao.update(

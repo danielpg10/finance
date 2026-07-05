@@ -37,7 +37,7 @@ data class AddTransactionUiState(
 }
 
 class AddTransactionViewModel(
-    categoryRepository: CategoryRepository,
+    private val categoryRepository: CategoryRepository,
     fundRepository: FundRepository,
     private val transactionRepository: TransactionRepository
 ) : ViewModel() {
@@ -68,6 +68,13 @@ class AddTransactionViewModel(
 
     fun onCategorySelected(categoryId: Long) {
         _uiState.update { it.copy(selectedCategoryId = categoryId) }
+    }
+
+    fun createCategory(name: String, icon: String, color: Long) {
+        viewModelScope.launch {
+            val id = categoryRepository.addCategory(name, icon, color, monthlyBudget = null)
+            _uiState.update { it.copy(selectedCategoryId = id) }
+        }
     }
 
     fun onFundSelected(fundId: Long) {
