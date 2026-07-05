@@ -1,0 +1,65 @@
+package com.example.finance.ui.screens.history
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.finance.domain.model.MonthSummary
+import com.example.finance.domain.model.Transaction
+import com.example.finance.domain.repository.TransactionRepository
+import java.time.YearMonth
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+data class HistoryUiState(
+    val month: YearMonth = YearMonth.now(),
+    val summary: MonthSummary = MonthSummary(0, 0, 0),
+    val transactions: List<Transaction> = emptyList(),
+    val firstMonth: YearMonth = YearMonth.now()
+) {
+    val canGoBack: Boolean
+        get() = month > firstMonth
+
+    val canGoForward: Boolean
+        get() = month < YearMonth.now()
+}
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class HistoryViewModel(
+    private val transactionRepository: TransactionRepository
+) : ViewModel() {
+
+    private val selectedMonth = MutableStateFlow(YearMonth.now())
+
+    val uiState: StateFlow<HistoryUiState> = selectedMonth
+        .flatMapLatest { month ->
+            combine(
+                transactionRepository.observeMonthSummary(month),
+                transactionRepository.observeMonth(month),
+                transactionRepository.observeFirstTransactionDate()
+            ) { summary, transactions, firstDate ->
+                HistoryUiState(
+                    month = month,
+                    summary = summary,
+                    transactions = transactions,
+                    firstMonth = firstDate?.let { YearMonth.from(it) } ?: YearMonth.now()
+                )
+            }
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HistoryUiState())
+
+    fun previousMonth() = selectedMonth.update { it.minusMonths(1) }
+
+    fun nextMonth() = selectedMonth.update { it.plusMonths(1) }
+
+    fun deleteTransaction(transactionId: Long) {
+        viewModelScope.launch {
+            transactionRepository.deleteTransaction(transactionId)
+        }
+    }
+}
