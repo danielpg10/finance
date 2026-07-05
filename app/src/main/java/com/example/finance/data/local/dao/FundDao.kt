@@ -19,7 +19,8 @@ interface FundDao {
     @Query(
         """
         SELECT f.*, f.initialBalance + IFNULL(
-            (SELECT SUM(t.amount) FROM transactions t WHERE t.fundId = f.id AND t.type = 'SAVING'), 0
+            (SELECT SUM(CASE t.type WHEN 'SAVING' THEN t.amount WHEN 'EXPENSE' THEN -t.amount END)
+             FROM transactions t WHERE t.fundId = f.id), 0
         ) AS balance
         FROM funds f
         ORDER BY f.id
@@ -30,9 +31,9 @@ interface FundDao {
     @Query(
         """
         SELECT IFNULL(SUM(f.initialBalance), 0) + IFNULL(
-            (SELECT SUM(t.amount) FROM transactions t
-             WHERE t.type = 'SAVING'
-             AND t.fundId IN (SELECT id FROM funds WHERE includeInGoal = 1)), 0
+            (SELECT SUM(CASE t.type WHEN 'SAVING' THEN t.amount WHEN 'EXPENSE' THEN -t.amount END)
+             FROM transactions t
+             WHERE t.fundId IN (SELECT id FROM funds WHERE includeInGoal = 1)), 0
         )
         FROM funds f WHERE f.includeInGoal = 1
         """

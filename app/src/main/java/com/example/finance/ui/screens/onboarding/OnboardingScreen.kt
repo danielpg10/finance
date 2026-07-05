@@ -296,14 +296,21 @@ private fun FundsStep(
         }
         Spacer(modifier = Modifier.height(32.dp))
         Button(
-            onClick = onContinue,
+            onClick = {
+                if (fundName.isNotBlank()) {
+                    onAddFund(fundName.trim(), fundType, fundBalance.toLongOrNull() ?: 0L)
+                    fundName = ""
+                    fundBalance = ""
+                }
+                onContinue()
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
             shape = RoundedCornerShape(18.dp)
         ) {
             Text(
-                text = if (funds.isEmpty()) "Omitir por ahora" else "Continuar",
+                text = if (funds.isEmpty() && fundName.isBlank()) "Omitir por ahora" else "Continuar",
                 style = MaterialTheme.typography.titleMedium
             )
         }

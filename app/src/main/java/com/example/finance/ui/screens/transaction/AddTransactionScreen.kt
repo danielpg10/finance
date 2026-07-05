@@ -1,7 +1,12 @@
 package com.example.finance.ui.screens.transaction
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -9,15 +14,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Backspace
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material3.AssistChip
+import androidx.compose.material.icons.rounded.Savings
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,6 +37,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -50,9 +57,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finance.di.AppViewModelProvider
 import com.example.finance.domain.model.TransactionType
 import com.example.finance.ui.components.CategoryVisuals
+import com.example.finance.ui.theme.ExpenseRed
+import com.example.finance.ui.theme.IncomeGreen
+import com.example.finance.ui.theme.SavingBlue
 import com.example.finance.util.toMoney
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun AddTransactionScreen(
     onClose: () -> Unit,
@@ -86,70 +96,53 @@ fun AddTransactionScreen(
                 .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                val options = listOf(
-                    TransactionType.EXPENSE to "Gasto",
-                    TransactionType.INCOME to "Ingreso",
-                    TransactionType.SAVING to "Aporte"
-                )
-                options.forEachIndexed { index, (type, label) ->
-                    SegmentedButton(
-                        selected = uiState.type == type,
-                        onClick = { viewModel.onTypeChange(type) },
-                        shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size)
-                    ) {
-                        Text(label)
-                    }
-                }
-            }
+            TypeSelector(
+                selected = uiState.type,
+                onSelect = viewModel::onTypeChange
+            )
 
-            Text(
-                text = if (uiState.amountValue > 0) uiState.amountValue.toMoney() else "$0",
-                style = MaterialTheme.typography.displayMedium,
-                fontWeight = FontWeight.ExtraBold,
-                textAlign = TextAlign.Center,
-                color = if (uiState.amountValue > 0)
-                    MaterialTheme.colorScheme.onBackground
-                else
-                    MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 28.dp)
+            AmountDisplay(
+                amount = uiState.amountValue,
+                type = uiState.type
             )
 
             when (uiState.type) {
                 TransactionType.EXPENSE -> {
-                    SelectorRow(
-                        items = categories.map { it.id to it.name },
+                    SectionTitle("Categoría")
+                    CategoryGrid(
+                        categories = categories.map { Triple(it.id, it.name, it) },
                         selectedId = uiState.selectedCategoryId,
                         onSelect = viewModel::onCategorySelected,
-                        leadingIcon = { id ->
-                            categories.firstOrNull { it.id == id }?.let { category ->
-                                Icon(
-                                    imageVector = CategoryVisuals.icon(category.icon),
-                                    contentDescription = null,
-                                    tint = Color(category.color),
-                                    modifier = Modifier.height(18.dp)
-                                )
-                            }
-                        },
                         onCreateNew = { showCreateCategory = true }
                     )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    FromSavingsRow(
+                        checked = uiState.fromSavings,
+                        onCheckedChange = viewModel::onFromSavingsChange
+                    )
+                    AnimatedVisibility(visible = uiState.fromSavings) {
+                        Column {
+                            Spacer(modifier = Modifier.height(10.dp))
+                            FundChips(
+                                funds = funds.map { it.id to it.name },
+                                selectedId = uiState.selectedFundId,
+                                onSelect = viewModel::onFundSelected
+                            )
+                        }
+                    }
                 }
                 TransactionType.SAVING -> {
-                    SelectorRow(
-                        items = funds.map { it.id to it.name },
+                    SectionTitle("¿A qué fondo va tu aporte?")
+                    FundChips(
+                        funds = funds.map { it.id to it.name },
                         selectedId = uiState.selectedFundId,
-                        onSelect = viewModel::onFundSelected,
-                        leadingIcon = null
+                        onSelect = viewModel::onFundSelected
                     )
                 }
-                TransactionType.INCOME -> {
-                    Spacer(modifier = Modifier.height(4.dp))
-                }
+                TransactionType.INCOME -> Unit
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(18.dp))
             OutlinedTextField(
                 value = uiState.note,
                 onValueChange = viewModel::onNoteChange,
@@ -159,13 +152,13 @@ fun AddTransactionScreen(
                 shape = RoundedCornerShape(16.dp)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(14.dp))
             NumericKeypad(
                 onDigit = viewModel::onDigit,
                 onDelete = viewModel::onDeleteDigit
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(14.dp))
             Button(
                 onClick = viewModel::save,
                 enabled = uiState.canSave,
@@ -192,45 +185,178 @@ fun AddTransactionScreen(
 }
 
 @Composable
-private fun SelectorRow(
-    items: List<Pair<Long, String>>,
-    selectedId: Long?,
-    onSelect: (Long) -> Unit,
-    leadingIcon: (@Composable (Long) -> Unit)?,
-    onCreateNew: (() -> Unit)? = null
+private fun TypeSelector(
+    selected: TransactionType,
+    onSelect: (TransactionType) -> Unit
 ) {
-    Row(
+    val options = listOf(
+        Triple(TransactionType.EXPENSE, "Gasto", ExpenseRed),
+        Triple(TransactionType.INCOME, "Ingreso", IncomeGreen),
+        Triple(TransactionType.SAVING, "Aporte", SavingBlue)
+    )
+    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+        options.forEachIndexed { index, (type, label, color) ->
+            SegmentedButton(
+                selected = selected == type,
+                onClick = { onSelect(type) },
+                shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
+                colors = SegmentedButtonDefaults.colors(
+                    activeContainerColor = color.copy(alpha = 0.16f),
+                    activeContentColor = color
+                )
+            ) {
+                Text(label, fontWeight = FontWeight.SemiBold)
+            }
+        }
+    }
+}
+
+@Composable
+private fun AmountDisplay(
+    amount: Long,
+    type: TransactionType
+) {
+    val amountColor by animateColorAsState(
+        targetValue = when {
+            amount == 0L -> MaterialTheme.colorScheme.onSurfaceVariant
+            type == TransactionType.EXPENSE -> ExpenseRed
+            type == TransactionType.INCOME -> IncomeGreen
+            else -> SavingBlue
+        },
+        label = "amountColor"
+    )
+    Text(
+        text = if (amount > 0) amount.toMoney() else "$0",
+        style = MaterialTheme.typography.displayMedium,
+        textAlign = TextAlign.Center,
+        color = amountColor,
+        maxLines = 1,
         modifier = Modifier
             .fillMaxWidth()
-            .horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+            .padding(vertical = 22.dp)
+    )
+}
+
+@Composable
+private fun SectionTitle(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleSmall,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(bottom = 10.dp)
+    )
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun CategoryGrid(
+    categories: List<Triple<Long, String, com.example.finance.domain.model.Category>>,
+    selectedId: Long?,
+    onSelect: (Long) -> Unit,
+    onCreateNew: () -> Unit
+) {
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items.forEach { (id, name) ->
+        categories.forEach { (id, name, category) ->
+            val categoryColor = Color(category.color)
+            val selected = selectedId == id
+            FilterChip(
+                selected = selected,
+                onClick = { onSelect(id) },
+                label = { Text(name) },
+                leadingIcon = {
+                    Icon(
+                        imageVector = CategoryVisuals.icon(category.icon),
+                        contentDescription = null,
+                        tint = if (selected) MaterialTheme.colorScheme.onPrimaryContainer else categoryColor,
+                        modifier = Modifier.size(18.dp)
+                    )
+                },
+                shape = RoundedCornerShape(12.dp),
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = categoryColor.copy(alpha = 0.18f),
+                    selectedLabelColor = MaterialTheme.colorScheme.onSurface,
+                    selectedLeadingIconColor = categoryColor
+                )
+            )
+        }
+        FilterChip(
+            selected = false,
+            onClick = onCreateNew,
+            label = { Text("Nueva") },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Rounded.Add,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(18.dp)
+                )
+            },
+            shape = RoundedCornerShape(12.dp)
+        )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun FundChips(
+    funds: List<Pair<Long, String>>,
+    selectedId: Long?,
+    onSelect: (Long) -> Unit
+) {
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        funds.forEach { (id, name) ->
             FilterChip(
                 selected = selectedId == id,
                 onClick = { onSelect(id) },
                 label = { Text(name) },
-                leadingIcon = leadingIcon?.let { icon -> { icon(id) } },
                 shape = RoundedCornerShape(12.dp),
                 colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
+                    selectedContainerColor = SavingBlue.copy(alpha = 0.16f),
+                    selectedLabelColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         }
-        if (onCreateNew != null) {
-            AssistChip(
-                onClick = onCreateNew,
-                label = { Text("Nueva") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Rounded.Add,
-                        contentDescription = null,
-                        modifier = Modifier.height(18.dp)
-                    )
-                },
-                shape = RoundedCornerShape(12.dp)
+    }
+}
+
+@Composable
+private fun FromSavingsRow(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Rounded.Savings,
+            contentDescription = null,
+            tint = SavingBlue,
+            modifier = Modifier.size(22.dp)
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "Sale de tus ahorros",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text(
+                text = "Descuenta el gasto de uno de tus fondos",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
     }
 }
 
@@ -245,9 +371,9 @@ private fun NumericKeypad(
         listOf("7", "8", "9"),
         listOf("000", "0", "⌫")
     )
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         rows.forEach { row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 row.forEach { key ->
                     KeypadButton(
                         key = key,
@@ -273,7 +399,7 @@ private fun KeypadButton(
 ) {
     TextButton(
         onClick = onClick,
-        modifier = modifier.aspectRatio(1.9f),
+        modifier = modifier.aspectRatio(2.1f),
         shape = RoundedCornerShape(16.dp)
     ) {
         if (key == "⌫") {

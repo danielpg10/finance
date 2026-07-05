@@ -22,6 +22,7 @@ data class AddTransactionUiState(
     val type: TransactionType = TransactionType.EXPENSE,
     val selectedCategoryId: Long? = null,
     val selectedFundId: Long? = null,
+    val fromSavings: Boolean = false,
     val note: String = "",
     val saved: Boolean = false
 ) {
@@ -30,7 +31,8 @@ data class AddTransactionUiState(
 
     val canSave: Boolean
         get() = amountValue > 0L && when (type) {
-            TransactionType.EXPENSE -> selectedCategoryId != null
+            TransactionType.EXPENSE ->
+                selectedCategoryId != null && (!fromSavings || selectedFundId != null)
             TransactionType.SAVING -> selectedFundId != null
             TransactionType.INCOME -> true
         }
@@ -81,6 +83,12 @@ class AddTransactionViewModel(
         _uiState.update { it.copy(selectedFundId = fundId) }
     }
 
+    fun onFromSavingsChange(fromSavings: Boolean) {
+        _uiState.update {
+            it.copy(fromSavings = fromSavings, selectedFundId = if (fromSavings) it.selectedFundId else null)
+        }
+    }
+
     fun onNoteChange(note: String) {
         _uiState.update { it.copy(note = note.take(80)) }
     }
@@ -93,7 +101,10 @@ class AddTransactionViewModel(
                 amount = state.amountValue,
                 type = state.type,
                 categoryId = state.selectedCategoryId.takeIf { state.type == TransactionType.EXPENSE },
-                fundId = state.selectedFundId.takeIf { state.type == TransactionType.SAVING },
+                fundId = state.selectedFundId.takeIf {
+                    state.type == TransactionType.SAVING ||
+                        (state.type == TransactionType.EXPENSE && state.fromSavings)
+                },
                 note = state.note,
                 date = LocalDate.now()
             )

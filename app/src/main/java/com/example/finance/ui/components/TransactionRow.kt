@@ -91,6 +91,9 @@ fun TransactionRow(
             )
             val subtitle = buildString {
                 append(DateFormatter.formatDay(transaction.date))
+                if (transaction.type == TransactionType.EXPENSE && transaction.fundName != null) {
+                    append(" · desde ${transaction.fundName}")
+                }
                 if (transaction.type == TransactionType.EXPENSE && !transaction.note.isNullOrBlank()) {
                     append(" · ${transaction.note}")
                 }
