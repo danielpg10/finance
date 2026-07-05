@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Calculate
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
 import androidx.compose.material3.AlertDialog
@@ -55,6 +56,7 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showGoalDialog by rememberSaveable { mutableStateOf(false) }
+    var showCalculator by rememberSaveable { mutableStateOf(false) }
     var transactionToDelete by remember { mutableStateOf<Transaction?>(null) }
 
     LazyColumn(
@@ -78,7 +80,8 @@ fun HomeScreen(
         item {
             GoalCard(
                 uiState = uiState,
-                onEditGoal = { showGoalDialog = true }
+                onEditGoal = { showGoalDialog = true },
+                onOpenCalculator = { showCalculator = true }
             )
         }
         item {
@@ -109,6 +112,13 @@ fun HomeScreen(
                 )
             }
         }
+    }
+
+    if (showCalculator) {
+        SavingsCalculatorSheet(
+            initialAmount = uiState.remainingToGoal,
+            onDismiss = { showCalculator = false }
+        )
     }
 
     if (showGoalDialog) {
@@ -146,7 +156,8 @@ fun HomeScreen(
 @Composable
 private fun GoalCard(
     uiState: HomeUiState,
-    onEditGoal: () -> Unit
+    onEditGoal: () -> Unit,
+    onOpenCalculator: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -179,6 +190,13 @@ private fun GoalCard(
                         text = "Objetivo: ${(uiState.goal?.targetAmount ?: 0L).toMoney()}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                IconButton(onClick = onOpenCalculator) {
+                    Icon(
+                        imageVector = Icons.Rounded.Calculate,
+                        contentDescription = "Calculadora de ahorro",
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
                 IconButton(onClick = onEditGoal) {
