@@ -48,7 +48,7 @@ fun StatsScreen(
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 96.dp)
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 130.dp)
     ) {
         item {
             MonthSelector(

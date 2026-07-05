@@ -63,7 +63,7 @@ fun FundsScreen(
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 96.dp)
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 130.dp)
     ) {
         item {
             Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
