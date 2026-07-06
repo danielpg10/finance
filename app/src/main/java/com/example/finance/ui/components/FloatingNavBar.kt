@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -46,11 +46,14 @@ fun FloatingNavBar(
     val darkTheme = isSystemInDarkTheme()
     val barShape = RoundedCornerShape(36.dp)
     val glassColor = if (darkTheme)
-        Color(0xFF1C1E22).copy(alpha = 0.94f)
+        Color(0xFF1C1E22).copy(alpha = 0.95f)
     else
-        Color(0xFF15171A).copy(alpha = 0.94f)
+        Color.White.copy(alpha = 0.97f)
     val glassBorder = Brush.verticalGradient(
-        colors = listOf(Color.White.copy(alpha = 0.16f), Color.White.copy(alpha = 0.02f))
+        colors = if (darkTheme)
+            listOf(Color.White.copy(alpha = 0.14f), Color.White.copy(alpha = 0.02f))
+        else
+            listOf(Color.White, Color.Black.copy(alpha = 0.05f))
     )
 
     Row(
@@ -94,12 +97,21 @@ private fun NavItem(
     selected: Boolean,
     onClick: () -> Unit
 ) {
+    val darkTheme = isSystemInDarkTheme()
     val contentColor by animateColorAsState(
-        targetValue = if (selected) Color.White else Color(0xFF8B929B),
+        targetValue = when {
+            selected && darkTheme -> Color(0xFF17181B)
+            selected -> Color.White
+            else -> Color(0xFF9AA1A9)
+        },
         label = "navItemColor"
     )
     val bubbleColor by animateColorAsState(
-        targetValue = if (selected) Color.White.copy(alpha = 0.14f) else Color.Transparent,
+        targetValue = when {
+            selected && darkTheme -> Color(0xFFF0F1F2)
+            selected -> Color(0xFF15171A)
+            else -> Color.Transparent
+        },
         label = "navItemBubble"
     )
 
@@ -143,7 +155,7 @@ private fun AddButton(onClick: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            imageVector = Icons.Rounded.Add,
+            imageVector = Icons.Outlined.Add,
             contentDescription = "Agregar movimiento",
             tint = Color.White,
             modifier = Modifier.size(28.dp)

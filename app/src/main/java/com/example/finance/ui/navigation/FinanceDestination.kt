@@ -1,10 +1,10 @@
 package com.example.finance.ui.navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AccountBalanceWallet
-import androidx.compose.material.icons.rounded.DonutLarge
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.Receipt
+import androidx.compose.material.icons.outlined.AccountBalanceWallet
+import androidx.compose.material.icons.outlined.DonutLarge
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Receipt
 import androidx.compose.ui.graphics.vector.ImageVector
 
 object FinanceDestination {
@@ -23,8 +23,8 @@ data class BottomNavItem(
 )
 
 val bottomNavItems = listOf(
-    BottomNavItem(FinanceDestination.HOME, "Inicio", Icons.Rounded.Home),
-    BottomNavItem(FinanceDestination.STATS, "Análisis", Icons.Rounded.DonutLarge),
-    BottomNavItem(FinanceDestination.HISTORY, "Historial", Icons.Rounded.Receipt),
-    BottomNavItem(FinanceDestination.FUNDS, "Fondos", Icons.Rounded.AccountBalanceWallet)
+    BottomNavItem(FinanceDestination.HOME, "Inicio", Icons.Outlined.Home),
+    BottomNavItem(FinanceDestination.STATS, "Análisis", Icons.Outlined.DonutLarge),
+    BottomNavItem(FinanceDestination.HISTORY, "Historial", Icons.Outlined.Receipt),
+    BottomNavItem(FinanceDestination.FUNDS, "Fondos", Icons.Outlined.AccountBalanceWallet)
 )

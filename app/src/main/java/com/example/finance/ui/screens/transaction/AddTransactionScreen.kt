@@ -4,12 +4,12 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,15 +20,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Backspace
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Savings
+import androidx.compose.material.icons.automirrored.outlined.Backspace
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Savings
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -39,7 +40,6 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -48,6 +48,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -83,7 +84,7 @@ fun AddTransactionScreen(
                 title = { Text("Nuevo movimiento", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onClose) {
-                        Icon(Icons.Rounded.Close, contentDescription = "Cerrar")
+                        Icon(Icons.Outlined.Close, contentDescription = "Cerrar")
                     }
                 }
             )
@@ -267,7 +268,7 @@ private fun CategoryGrid(
         categories.forEach { (id, name, category) ->
             val categoryColor = Color(category.color)
             val selected = selectedId == id
-            FilterChip(
+            ElevatedFilterChip(
                 selected = selected,
                 onClick = { onSelect(id) },
                 label = { Text(name) },
@@ -275,31 +276,35 @@ private fun CategoryGrid(
                     Icon(
                         imageVector = CategoryVisuals.icon(category.icon),
                         contentDescription = null,
-                        tint = if (selected) MaterialTheme.colorScheme.onPrimaryContainer else categoryColor,
+                        tint = categoryColor,
                         modifier = Modifier.size(18.dp)
                     )
                 },
-                shape = RoundedCornerShape(12.dp),
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = categoryColor.copy(alpha = 0.18f),
+                shape = RoundedCornerShape(14.dp),
+                colors = FilterChipDefaults.elevatedFilterChipColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    selectedContainerColor = categoryColor.copy(alpha = 0.16f),
                     selectedLabelColor = MaterialTheme.colorScheme.onSurface,
                     selectedLeadingIconColor = categoryColor
                 )
             )
         }
-        FilterChip(
+        ElevatedFilterChip(
             selected = false,
             onClick = onCreateNew,
             label = { Text("Nueva") },
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Add,
+                    imageVector = Icons.Outlined.Add,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
+                    tint = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.size(18.dp)
                 )
             },
-            shape = RoundedCornerShape(12.dp)
+            shape = RoundedCornerShape(14.dp),
+            colors = FilterChipDefaults.elevatedFilterChipColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
         )
     }
 }
@@ -316,12 +321,13 @@ private fun FundChips(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         funds.forEach { (id, name) ->
-            FilterChip(
+            ElevatedFilterChip(
                 selected = selectedId == id,
                 onClick = { onSelect(id) },
                 label = { Text(name) },
-                shape = RoundedCornerShape(12.dp),
-                colors = FilterChipDefaults.filterChipColors(
+                shape = RoundedCornerShape(14.dp),
+                colors = FilterChipDefaults.elevatedFilterChipColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
                     selectedContainerColor = SavingBlue.copy(alpha = 0.16f),
                     selectedLabelColor = MaterialTheme.colorScheme.onSurface
                 )
@@ -338,12 +344,13 @@ private fun FromSavingsRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .shadow(2.dp, RoundedCornerShape(18.dp), spotColor = Color.Black.copy(alpha = 0.25f))
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
             .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            imageVector = Icons.Rounded.Savings,
+            imageVector = Icons.Outlined.Savings,
             contentDescription = null,
             tint = SavingBlue,
             modifier = Modifier.size(22.dp)
@@ -376,9 +383,9 @@ private fun NumericKeypad(
         listOf("7", "8", "9"),
         listOf("000", "0", "⌫")
     )
-    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         rows.forEach { row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 row.forEach { key ->
                     KeypadButton(
                         key = key,
@@ -402,24 +409,29 @@ private fun KeypadButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    TextButton(
+    Surface(
         onClick = onClick,
-        modifier = modifier.aspectRatio(2.6f),
-        shape = RoundedCornerShape(16.dp)
+        modifier = modifier.height(50.dp),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surface,
+        shadowElevation = 1.dp
     ) {
-        if (key == "⌫") {
-            Icon(
-                imageVector = Icons.AutoMirrored.Rounded.Backspace,
-                contentDescription = "Borrar",
-                tint = MaterialTheme.colorScheme.onSurface
-            )
-        } else {
-            Text(
-                text = key,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+        Box(contentAlignment = Alignment.Center) {
+            if (key == "⌫") {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.Backspace,
+                    contentDescription = "Borrar",
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(22.dp)
+                )
+            } else {
+                Text(
+                    text = key,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
         }
     }
 }
