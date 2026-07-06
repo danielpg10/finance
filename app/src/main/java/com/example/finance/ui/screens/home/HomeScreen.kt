@@ -13,9 +13,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Calculate
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
+import androidx.compose.material.icons.outlined.Calculate
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.automirrored.outlined.ReceiptLong
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -98,7 +98,7 @@ fun HomeScreen(
         if (uiState.recentTransactions.isEmpty()) {
             item {
                 EmptyState(
-                    icon = Icons.AutoMirrored.Rounded.ReceiptLong,
+                    icon = Icons.AutoMirrored.Outlined.ReceiptLong,
                     title = "Sin movimientos aún",
                     subtitle = "Toca el botón + para registrar tu primer gasto, ingreso o aporte."
                 )
@@ -165,7 +165,7 @@ private fun GoalCard(
             .padding(horizontal = 20.dp, vertical = 16.dp),
         shape = RoundedCornerShape(28.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier
@@ -194,13 +194,13 @@ private fun GoalCard(
                 }
                 IconButton(onClick = onOpenCalculator) {
                     Icon(
-                        imageVector = Icons.Rounded.Calculate,
+                        imageVector = Icons.Outlined.Calculate,
                         contentDescription = "Calculadora de ahorro",
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
                 IconButton(onClick = onEditGoal) {
-                    Icon(Icons.Rounded.Edit, contentDescription = "Editar meta")
+                    Icon(Icons.Outlined.Edit, contentDescription = "Editar meta")
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -210,7 +210,7 @@ private fun GoalCard(
                     .size(190.dp)
                     .align(Alignment.CenterHorizontally),
                 trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                progressColor = MaterialTheme.colorScheme.primary
+                progressColor = MaterialTheme.colorScheme.secondary
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
@@ -280,7 +280,7 @@ private fun SummaryChip(
         modifier = modifier,
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(14.dp)) {
             Text(

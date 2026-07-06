@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,6 +32,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.finance.ui.navigation.BottomNavItem
+import com.example.finance.ui.theme.EmeraldDark
+import com.example.finance.ui.theme.EmeraldLight
 
 @Composable
 fun FloatingNavBar(
@@ -44,14 +46,14 @@ fun FloatingNavBar(
     val darkTheme = isSystemInDarkTheme()
     val barShape = RoundedCornerShape(36.dp)
     val glassColor = if (darkTheme)
-        MaterialTheme.colorScheme.surface.copy(alpha = 0.88f)
+        Color(0xFF1C1E22).copy(alpha = 0.95f)
     else
-        Color.White.copy(alpha = 0.90f)
+        Color.White.copy(alpha = 0.97f)
     val glassBorder = Brush.verticalGradient(
         colors = if (darkTheme)
-            listOf(Color.White.copy(alpha = 0.18f), Color.White.copy(alpha = 0.04f))
+            listOf(Color.White.copy(alpha = 0.14f), Color.White.copy(alpha = 0.02f))
         else
-            listOf(Color.White.copy(alpha = 0.95f), Color.White.copy(alpha = 0.25f))
+            listOf(Color.White, Color.Black.copy(alpha = 0.05f))
     )
 
     Row(
@@ -95,18 +97,21 @@ private fun NavItem(
     selected: Boolean,
     onClick: () -> Unit
 ) {
+    val darkTheme = isSystemInDarkTheme()
     val contentColor by animateColorAsState(
-        targetValue = if (selected)
-            MaterialTheme.colorScheme.primary
-        else
-            MaterialTheme.colorScheme.onSurfaceVariant,
+        targetValue = when {
+            selected && darkTheme -> Color(0xFF17181B)
+            selected -> Color.White
+            else -> Color(0xFF9AA1A9)
+        },
         label = "navItemColor"
     )
     val bubbleColor by animateColorAsState(
-        targetValue = if (selected)
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.14f)
-        else
-            Color.Transparent,
+        targetValue = when {
+            selected && darkTheme -> Color(0xFFF0F1F2)
+            selected -> Color(0xFF15171A)
+            else -> Color.Transparent
+        },
         label = "navItemBubble"
     )
 
@@ -144,20 +149,15 @@ private fun AddButton(onClick: () -> Unit) {
             .shadow(elevation = 8.dp, shape = CircleShape)
             .clip(CircleShape)
             .background(
-                Brush.verticalGradient(
-                    listOf(
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.85f)
-                    )
-                )
+                Brush.verticalGradient(listOf(EmeraldLight, EmeraldDark))
             )
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            imageVector = Icons.Rounded.Add,
+            imageVector = Icons.Outlined.Add,
             contentDescription = "Agregar movimiento",
-            tint = MaterialTheme.colorScheme.onPrimary,
+            tint = Color.White,
             modifier = Modifier.size(28.dp)
         )
     }

@@ -19,11 +19,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AccountBalance
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Payments
-import androidx.compose.material.icons.rounded.PhoneAndroid
-import androidx.compose.material.icons.rounded.Savings
+import androidx.compose.material.icons.outlined.AccountBalance
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Payments
+import androidx.compose.material.icons.outlined.PhoneAndroid
+import androidx.compose.material.icons.outlined.Savings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -227,7 +227,7 @@ private fun FundsStep(
 
     Column {
         StepHeader(
-            icon = Icons.Rounded.AccountBalance,
+            icon = Icons.Outlined.AccountBalance,
             title = "Tus fondos",
             subtitle = "¿Dónde guardas tus ahorros? Agrega tus bancos, billeteras o efectivo con lo que ya tengas."
         )
@@ -336,7 +336,7 @@ private fun DraftFundCard(
             .padding(vertical = 5.dp),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
             modifier = Modifier.padding(start = 14.dp, top = 10.dp, bottom = 10.dp, end = 6.dp),
@@ -374,7 +374,7 @@ private fun DraftFundCard(
             }
             IconButton(onClick = onRemove) {
                 Icon(
-                    imageVector = Icons.Rounded.Close,
+                    imageVector = Icons.Outlined.Close,
                     contentDescription = "Quitar fondo",
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(20.dp)
@@ -396,7 +396,7 @@ private fun GoalStep(
 ) {
     Column {
         StepHeader(
-            icon = Icons.Rounded.Savings,
+            icon = Icons.Outlined.Savings,
             title = "Tu meta",
             subtitle = "Define para qué estás ahorrando y cuánto necesitas. Podrás editarla cuando quieras."
         )
@@ -439,9 +439,9 @@ private fun GoalStep(
 }
 
 private fun fundTypeIcon(type: FundType): ImageVector = when (type) {
-    FundType.BANK -> Icons.Rounded.AccountBalance
-    FundType.CASH -> Icons.Rounded.Payments
-    FundType.DIGITAL_WALLET -> Icons.Rounded.PhoneAndroid
+    FundType.BANK -> Icons.Outlined.AccountBalance
+    FundType.CASH -> Icons.Outlined.Payments
+    FundType.DIGITAL_WALLET -> Icons.Outlined.PhoneAndroid
 }
 
 private fun fundTypeLabel(type: FundType): String = when (type) {

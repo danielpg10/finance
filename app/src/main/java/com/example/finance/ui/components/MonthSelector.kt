@@ -3,8 +3,8 @@ package com.example.finance.ui.components
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,7 +31,7 @@ fun MonthSelector(
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onPrevious, enabled = canGoBack) {
-            Icon(Icons.AutoMirrored.Rounded.KeyboardArrowLeft, contentDescription = "Mes anterior")
+            Icon(Icons.AutoMirrored.Outlined.KeyboardArrowLeft, contentDescription = "Mes anterior")
         }
         Text(
             text = DateFormatter.formatMonth(month),
@@ -41,7 +41,7 @@ fun MonthSelector(
             fontWeight = FontWeight.Bold
         )
         IconButton(onClick = onNext, enabled = canGoForward) {
-            Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, contentDescription = "Mes siguiente")
+            Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, contentDescription = "Mes siguiente")
         }
     }
 }

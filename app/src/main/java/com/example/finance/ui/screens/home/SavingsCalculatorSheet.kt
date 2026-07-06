@@ -80,7 +80,7 @@ fun SavingsCalculatorSheet(
                 Text(
                     text = if (months == 1) "1 mes" else "$months meses",
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.secondary,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -94,7 +94,7 @@ fun SavingsCalculatorSheet(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
+                        MaterialTheme.colorScheme.secondary.copy(alpha = 0.10f),
                         RoundedCornerShape(24.dp)
                     )
                     .padding(24.dp),
@@ -109,7 +109,7 @@ fun SavingsCalculatorSheet(
                 Text(
                     text = if (monthlyAmount > 0) "${monthlyAmount.toMoney()} / mes" else "—",
                     style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.secondary
                 )
                 if (monthlyAmount > 0) {
                     Spacer(modifier = Modifier.height(6.dp))

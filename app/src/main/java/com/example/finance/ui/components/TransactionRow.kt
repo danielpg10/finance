@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Savings
-import androidx.compose.material.icons.automirrored.rounded.TrendingUp
+import androidx.compose.material.icons.outlined.Savings
+import androidx.compose.material.icons.automirrored.outlined.TrendingUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,9 +37,9 @@ fun TransactionRow(
     onLongPress: (() -> Unit)? = null
 ) {
     val (icon, iconColor, title) = when (transaction.type) {
-        TransactionType.INCOME -> Triple(Icons.AutoMirrored.Rounded.TrendingUp, IncomeGreen, transaction.note ?: "Ingreso")
+        TransactionType.INCOME -> Triple(Icons.AutoMirrored.Outlined.TrendingUp, IncomeGreen, transaction.note ?: "Ingreso")
         TransactionType.SAVING -> Triple(
-            Icons.Rounded.Savings,
+            Icons.Outlined.Savings,
             SavingBlue,
             transaction.fundName?.let { "Aporte a $it" } ?: "Aporte a meta"
         )

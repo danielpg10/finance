@@ -16,12 +16,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AccountBalance
-import androidx.compose.material.icons.rounded.AccountBalanceWallet
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Payments
-import androidx.compose.material.icons.rounded.PhoneAndroid
+import androidx.compose.material.icons.outlined.AccountBalance
+import androidx.compose.material.icons.outlined.AccountBalanceWallet
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Payments
+import androidx.compose.material.icons.outlined.PhoneAndroid
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -96,7 +96,7 @@ fun FundsScreen(
                     .height(52.dp),
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Icon(Icons.Rounded.Add, contentDescription = null)
+                Icon(Icons.Outlined.Add, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Agregar fondo")
             }
@@ -147,7 +147,7 @@ private fun FundCard(
             .padding(horizontal = 20.dp, vertical = 6.dp),
         shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -199,7 +199,7 @@ private fun FundCard(
                 )
                 IconButton(onClick = onDelete) {
                     Icon(
-                        imageVector = Icons.Rounded.Delete,
+                        imageVector = Icons.Outlined.Delete,
                         contentDescription = "Eliminar fondo",
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -220,7 +220,7 @@ private fun AddFundDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        icon = { Icon(Icons.Rounded.AccountBalanceWallet, contentDescription = null) },
+        icon = { Icon(Icons.Outlined.AccountBalanceWallet, contentDescription = null) },
         title = { Text("Nuevo fondo") },
         text = {
             Column {
@@ -263,9 +263,9 @@ private fun AddFundDialog(
 }
 
 private fun fundTypeIcon(type: FundType): ImageVector = when (type) {
-    FundType.BANK -> Icons.Rounded.AccountBalance
-    FundType.CASH -> Icons.Rounded.Payments
-    FundType.DIGITAL_WALLET -> Icons.Rounded.PhoneAndroid
+    FundType.BANK -> Icons.Outlined.AccountBalance
+    FundType.CASH -> Icons.Outlined.Payments
+    FundType.DIGITAL_WALLET -> Icons.Outlined.PhoneAndroid
 }
 
 private fun fundTypeLabel(type: FundType): String = when (type) {

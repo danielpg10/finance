@@ -15,7 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.DonutLarge
+import androidx.compose.material.icons.outlined.DonutLarge
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -63,7 +63,7 @@ fun StatsScreen(
         if (uiState.spending.isEmpty()) {
             item {
                 EmptyState(
-                    icon = Icons.Rounded.DonutLarge,
+                    icon = Icons.Outlined.DonutLarge,
                     title = "Sin gastos este mes",
                     subtitle = "Cuando registres gastos verás aquí en qué se va tu dinero."
                 )
@@ -76,7 +76,7 @@ fun StatsScreen(
                         .padding(horizontal = 20.dp),
                     shape = RoundedCornerShape(28.dp),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                 ) {
                     DonutChart(
                         slices = uiState.spending.map {
