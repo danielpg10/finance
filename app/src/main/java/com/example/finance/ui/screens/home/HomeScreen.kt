@@ -210,7 +210,7 @@ private fun GoalCard(
                     .size(190.dp)
                     .align(Alignment.CenterHorizontally),
                 trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                progressColor = MaterialTheme.colorScheme.primary
+                progressColor = MaterialTheme.colorScheme.secondary
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(

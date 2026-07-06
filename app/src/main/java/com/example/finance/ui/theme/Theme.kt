@@ -8,11 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val LightColorScheme = lightColorScheme(
-    primary = EmeraldDark,
+    primary = Ink,
     onPrimary = SurfaceLight,
-    primaryContainer = EmeraldContainer,
-    onPrimaryContainer = OnEmeraldContainer,
-    secondary = InkSoft,
+    primaryContainer = Color(0xFFE4E6E9),
+    onPrimaryContainer = Ink,
+    secondary = EmeraldDark,
     onSecondary = SurfaceLight,
     secondaryContainer = EmeraldContainer,
     onSecondaryContainer = OnEmeraldContainer,
@@ -27,15 +27,15 @@ private val LightColorScheme = lightColorScheme(
     surfaceVariant = SurfaceVariantLight,
     onSurfaceVariant = InkSoft,
     error = ExpenseRed,
-    outline = Color(0xFFCBD5D1)
+    outline = Color(0xFFD3D6DA)
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = EmeraldLight,
+    primary = NightText,
     onPrimary = NightBackground,
-    primaryContainer = Color(0xFF0E3D2E),
-    onPrimaryContainer = EmeraldContainer,
-    secondary = NightTextSoft,
+    primaryContainer = Color(0xFF2A2D31),
+    onPrimaryContainer = NightText,
+    secondary = EmeraldLight,
     onSecondary = NightBackground,
     secondaryContainer = Color(0xFF0E3D2E),
     onSecondaryContainer = EmeraldContainer,
@@ -50,7 +50,7 @@ private val DarkColorScheme = darkColorScheme(
     surfaceVariant = NightSurfaceVariant,
     onSurfaceVariant = NightTextSoft,
     error = Color(0xFFF87171),
-    outline = Color(0xFF3A4A43)
+    outline = Color(0xFF3C4046)
 )
 
 @Composable

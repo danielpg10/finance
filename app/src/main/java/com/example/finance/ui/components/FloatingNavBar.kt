@@ -32,6 +32,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.finance.ui.navigation.BottomNavItem
+import com.example.finance.ui.theme.EmeraldDark
+import com.example.finance.ui.theme.EmeraldLight
 
 @Composable
 fun FloatingNavBar(
@@ -44,14 +46,11 @@ fun FloatingNavBar(
     val darkTheme = isSystemInDarkTheme()
     val barShape = RoundedCornerShape(36.dp)
     val glassColor = if (darkTheme)
-        MaterialTheme.colorScheme.surface.copy(alpha = 0.88f)
+        Color(0xFF1C1E22).copy(alpha = 0.94f)
     else
-        Color.White.copy(alpha = 0.90f)
+        Color(0xFF15171A).copy(alpha = 0.94f)
     val glassBorder = Brush.verticalGradient(
-        colors = if (darkTheme)
-            listOf(Color.White.copy(alpha = 0.18f), Color.White.copy(alpha = 0.04f))
-        else
-            listOf(Color.White.copy(alpha = 0.95f), Color.White.copy(alpha = 0.25f))
+        colors = listOf(Color.White.copy(alpha = 0.16f), Color.White.copy(alpha = 0.02f))
     )
 
     Row(
@@ -96,17 +95,11 @@ private fun NavItem(
     onClick: () -> Unit
 ) {
     val contentColor by animateColorAsState(
-        targetValue = if (selected)
-            MaterialTheme.colorScheme.primary
-        else
-            MaterialTheme.colorScheme.onSurfaceVariant,
+        targetValue = if (selected) Color.White else Color(0xFF8B929B),
         label = "navItemColor"
     )
     val bubbleColor by animateColorAsState(
-        targetValue = if (selected)
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.14f)
-        else
-            Color.Transparent,
+        targetValue = if (selected) Color.White.copy(alpha = 0.14f) else Color.Transparent,
         label = "navItemBubble"
     )
 
@@ -144,12 +137,7 @@ private fun AddButton(onClick: () -> Unit) {
             .shadow(elevation = 8.dp, shape = CircleShape)
             .clip(CircleShape)
             .background(
-                Brush.verticalGradient(
-                    listOf(
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.85f)
-                    )
-                )
+                Brush.verticalGradient(listOf(EmeraldLight, EmeraldDark))
             )
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
@@ -157,7 +145,7 @@ private fun AddButton(onClick: () -> Unit) {
         Icon(
             imageVector = Icons.Rounded.Add,
             contentDescription = "Agregar movimiento",
-            tint = MaterialTheme.colorScheme.onPrimary,
+            tint = Color.White,
             modifier = Modifier.size(28.dp)
         )
     }
